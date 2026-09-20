@@ -81,7 +81,7 @@ Create `.vscode/mcp.json` in the workspace where you want to use the server:
 ```json
 {
   "servers": {
-    "dataverse": {
+    "dataverse-dev": {
       "type": "http",
       "url": "http://127.0.0.1:3000/mcp"
     }
@@ -91,10 +91,9 @@ Create `.vscode/mcp.json` in the workspace where you want to use the server:
 
 For other MCP-compatible agents, add a **Streamable HTTP** server using the same endpoint.
 
-
 ### 6. Verify and test the server in your agent
 
-Keep `npm run start` running, open your agent in the workspace, and confirm that the `dataverse` tools are available. In GitHub Copilot Chat, use **Agent** mode and select **Tools** to enable them.
+Keep `npm run start` running, open your agent in the workspace, and confirm that the `dataverse-dev` tools are available. In GitHub Copilot Chat, use **Agent** mode and select **Tools** to enable them.
 
 Try these prompts:
 
@@ -102,6 +101,18 @@ Try these prompts:
 - `Call whoami for the dev environment`
 
 The first prompt should return the environments from `environments.json`. The second should return the authenticated Dataverse user, business unit, and organization.
+
+### 7. Add Dataverse instructions for GitHub Copilot
+
+Copy [`docs/examples/copilot-instructions.md`](docs/examples/copilot-instructions.md) to `.github/copilot-instructions.md` in the workspace where you use the MCP server, then customize it for your project:
+
+* replace `YOUR-dev`, `YOUR-test`, and `YOUR-prod` with the connection names from `connections.json`
+* replace `YOUR_DEFAULT_SOLUTION` with the unique name of the primary Dataverse solution
+* adjust the default connection and safety rules for the project
+
+These repository-wide instructions help GitHub Copilot select the appropriate Dataverse tools and connections consistently, while applying project-specific safeguards.
+
+Commit the customized file to the project repository so all contributors use the same guidance.
 
 ## MCP tools
 

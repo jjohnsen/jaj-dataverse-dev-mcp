@@ -1,0 +1,9 @@
+{
+	"servers": {
+		"dataverse-dev": {
+			"url": "http://127.0.0.1:3000/mcp",
+			"type": "http"
+		}
+	},
+	"inputs": []
+}
