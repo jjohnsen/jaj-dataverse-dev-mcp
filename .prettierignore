@@ -1,0 +1,4 @@
+*.md
+*.json
+.gitignore
+.prettierrc

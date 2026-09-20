@@ -1,0 +1,31 @@
+{
+  "name": "jaj-dataverse-dev-mcp",
+  "version": "1.0.0",
+  "description": "Local-first MCP server for day-to-day Dataverse and Power Platform development using Azure CLI authentication and the Dataverse Web API.",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "inspect": "mcp-inspector --server-url http://127.0.0.1:3000/mcp --transport http",
+    "inspect:tools": "mcp-inspector --cli http://127.0.0.1:3000/mcp --transport http --method tools/list",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@azure/identity": "^4.13.3",
+    "@modelcontextprotocol/node": "^2.0.0",
+    "@modelcontextprotocol/server": "^2.0.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/inspector": "^2.7.0",
+    "@types/node": "^26.6.2",
+    "prettier": "^3.9.8",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
+  }
+}

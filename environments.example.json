@@ -1,0 +1,17 @@
+{
+  "environments": {
+    "dev": { 
+      "url": "https://YOUR-DEV.crm.dynamics.com/", 
+      "allowWrite": true
+    },
+    "test": {
+      "url": "https://YOUR-TEST.crm4.dynamics.com",
+      "allowWrite": false
+    },
+    "prod": {
+      "url": "https://YOUR-PROD.crm4.dynamics.com",
+      "allowWrite": false,
+      "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    }
+  }
+}
