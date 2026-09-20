@@ -4,7 +4,7 @@ import { McpServer } from "@modelcontextprotocol/server";
 import * as z from "zod/v4";
 
 import { dataverseRequest } from "./dataverse.js";
-import { environments } from "./environments.js";
+import { getEnvironments } from "./environments.js";
 
 const require = createRequire(import.meta.url);
 const { version } = require("../package.json") as { version: string };
@@ -37,7 +37,7 @@ export function createServer(): McpServer {
         "List the configured Dataverse environments that can be accessed.",
     },
     async () => {
-      const result = Object.entries(environments).map(
+      const result = Object.entries(getEnvironments()).map(
         ([name, environment]) => ({
           name,
           url: environment.url,

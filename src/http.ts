@@ -1,4 +1,6 @@
 import { createServer as createHttpServer } from "node:http";
+import { realpathSync } from "node:fs";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import {
   localhostHostValidation,
@@ -10,9 +12,9 @@ import { createMcpHandler } from "@modelcontextprotocol/server";
 
 import { createServer } from "./server.js";
 
-export function startHttpServer() {
+export function startHttpServer(portOverride?: number) {
   const host = "127.0.0.1";
-  const port = Number(process.env.PORT ?? 3000);
+  const port = portOverride ?? Number(process.env.PORT ?? 3000);
 
   const mcpHandler = createMcpHandler(createServer);
   const nodeHandler = toNodeHandler(mcpHandler);
@@ -49,6 +51,20 @@ export function startHttpServer() {
   return httpServer;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+function isDirectExecution(): boolean {
+  const entry = process.argv[1];
+
+  if (!entry) {
+    return false;
+  }
+
+  try {
+    return realpathSync(entry) === fileURLToPath(import.meta.url);
+  } catch {
+    return import.meta.url === pathToFileURL(entry).href;
+  }
+}
+
+if (isDirectExecution()) {
   startHttpServer();
 }

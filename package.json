@@ -2,11 +2,20 @@
   "name": "jaj-dataverse-dev-mcp",
   "version": "1.0.0",
   "description": "Local-first MCP server for day-to-day Dataverse and Power Platform development using Azure CLI authentication and the Dataverse Web API.",
+  "bin": {
+    "jaj-dataverse-dev-mcp": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "dev": "npm run dev:http",
+    "dev": "tsx watch src/cli.ts",
     "dev:http": "tsx watch src/http.ts",
     "dev:stdio": "tsx watch src/stdio.ts",
-    "start": "tsx src/http.ts",
+    "start": "tsx src/cli.ts",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "inspect": "mcp-inspector --server-url http://127.0.0.1:3000/mcp --transport http",

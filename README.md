@@ -163,3 +163,48 @@ To list tools using Inspector directly:
 ```bash
 npm run inspect:tools
 ```
+
+## Packaged binary via npx
+
+The package also supports running the MCP server directly as a packaged binary via `npx`, which is the easiest installation path for local MCP clients.
+
+```bash
+npx -y jaj-dataverse-dev-mcp
+```
+
+Use --help for options
+
+## Local package install from a tarball
+
+To test the package locally before publishing, build it, pack it, and install the generated tarball in a clean folder:
+
+```bash
+npm install
+npm run build
+npm pack
+```
+
+This creates a file such as:
+
+```bash
+jaj-dataverse-dev-mcp-1.0.0.tgz
+```
+
+Then install it in a separate temporary project:
+
+```bash
+mkdir -p /tmp/jaj-mcp-test
+cd /tmp/jaj-mcp-test
+npm init -y
+npm install /workspaces/jaj-dataverse-mcp/jaj-dataverse-dev-mcp-1.0.0.tgz
+```
+
+Now you can invoke the installed binary the same way a real user would:
+
+```bash
+npx jaj-dataverse-dev-mcp --help
+npx jaj-dataverse-dev-mcp
+npx jaj-dataverse-dev-mcp --http --port 3000
+```
+
+This validates the packaged CLI entry point and the runtime behavior without publishing to npm.

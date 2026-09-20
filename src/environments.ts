@@ -53,9 +53,15 @@ export function loadEnvironments(
   return parsed.data.environments;
 }
 
-export const environments = loadEnvironments();
+export function getEnvironments(
+  configPath = process.env.DATAVERSE_ENVIRONMENTS_PATH ??
+    defaultEnvironmentsPath,
+): Record<string, DataverseEnvironment> {
+  return loadEnvironments(configPath);
+}
 
 export function getEnvironment(name: string): DataverseEnvironment {
+  const environments = getEnvironments();
   const environment = environments[name as keyof typeof environments];
 
   if (!environment) {
