@@ -1,10 +1,13 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.jjohnsen/jaj-dataverse-dev-mcp",
+  "title": "JAJ Dataverse Dev MCP",
   "description": "Xrm/Power Platform/Dataverse MCP for devs, Azure CLI auth, Web API and multi-environment support",
+  "websiteUrl": "https://github.com/jjohnsen/jaj-dataverse-dev-mcp#readme",
   "repository": {
     "url": "https://github.com/jjohnsen/jaj-dataverse-dev-mcp",
-    "source": "github"
+    "source": "github",
+    "id": "1378110890"
   },
   "version": "0.1.3",
   "packages": [
@@ -19,8 +22,9 @@
         {
           "description": "Optional path to the Dataverse environments configuration file. Defaults to ./environments.json.",
           "isRequired": false,
-          "format": "string",
+          "format": "filepath",
           "isSecret": false,
+          "placeholder": "./environments.json",
           "name": "DATAVERSE_ENVIRONMENTS_PATH"
         }
       ]
