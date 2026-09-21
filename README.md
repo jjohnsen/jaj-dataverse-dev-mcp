@@ -126,8 +126,6 @@ Example:
 ## Add project-specific Copilot instructions
 For better agent behavior, add Dataverse-specific instructions to the project where you use the MCP.
 
-See: [docs/examples/copilot-instructions.md](https://github.com/jjohnsen/jaj-dataverse-dev-mcp/blob/HEAD/docs/examples/copilot-instructions.md)
-
 Copy [`docs/examples/copilot-instructions.md`](docs/examples/copilot-instructions.md) to `.github/copilot-instructions.md` in the workspace where you use the MCP server, then customize it for your project:
 
 * replace `YOUR-dev`, `YOUR-test`, and `YOUR-prod` with the environment names from `environments.json`
