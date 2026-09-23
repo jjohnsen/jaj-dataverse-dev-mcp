@@ -20,9 +20,7 @@ function getCredential(environment: DataverseEnvironment): AzureCliCredential {
   return credential;
 }
 
-export async function getAccessToken(
-  environment: DataverseEnvironment,
-): Promise<string> {
+export async function getAccessToken(environment: DataverseEnvironment): Promise<string> {
   const credential = getCredential(environment);
   const environmentUrl = environment.url.replace(/\/$/, "");
   const token = await credential.getToken(`${environmentUrl}/.default`);

@@ -100,7 +100,7 @@ export function createServer(): McpServer {
           ),
 
         body: z
-          .unknown()
+          .record(z.string(), z.json())
           .optional()
           .describe("Optional JSON body for POST or PATCH requests."),
 
