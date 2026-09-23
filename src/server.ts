@@ -23,8 +23,23 @@ function textResult(value: unknown) {
   };
 }
 
+function getEnvironmentSchema() {
+  const names = Object.keys(getEnvironments());
+
+  if (names.length === 0) {
+    throw new Error("No Dataverse environments configured.");
+  }
+
+  return z
+    .enum(names as [string, ...string[]])
+    .describe(
+      "Configured Dataverse environment. Values in this enum are already valid and do not need to be verified with list_environments.",
+    );
+}
+
 export function createServer(): McpServer {
   const server = new McpServer({ name: "jaj-dataverse-dev-mcp", version });
+  const environmentSchema = getEnvironmentSchema();
 
   server.registerTool(
     "ping",
@@ -35,8 +50,10 @@ export function createServer(): McpServer {
   server.registerTool(
     "list_environments",
     {
-      description:
-        "List the configured Dataverse environments that can be accessed.",
+      description: [
+        "Discover the configured Dataverse environments.",
+        "Use this when the user asks which environments are available"
+      ].join(" "),
     },
     async () => {
       const result = Object.entries(getEnvironments()).map(
@@ -54,13 +71,11 @@ export function createServer(): McpServer {
   server.registerTool(
     "whoami",
     {
-      description:
-        "Get the Dataverse user, business unit and organization for the Azure CLI authenticated identity.",
-      inputSchema: z.object({
-        environment: z
-          .string()
-          .describe("Environment name returned by list_environments."),
-      }),
+      description: [
+        "Get the Dataverse user, business unit and organization",
+        "for the Azure CLI authenticated identity.",
+      ].join(" "),
+      inputSchema: z.object({ environment: environmentSchema }),
     },
     async ({ environment }) => {
       const result = await dataverseRequest({
@@ -73,8 +88,6 @@ export function createServer(): McpServer {
     },
   );
 
-  registerPrompts(server);
-
   server.registerTool(
     "dataverse_request",
     {
@@ -86,9 +99,7 @@ export function createServer(): McpServer {
         "Do not pass a complete URL.",
       ].join(" "),
       inputSchema: z.object({
-        environment: z
-          .string()
-          .describe("Environment name returned by list_environments."),
+        environment: environmentSchema,
 
         method: z.enum(["GET", "POST", "PATCH", "DELETE"]),
 
@@ -108,7 +119,7 @@ export function createServer(): McpServer {
           .optional()
           .describe("Optional JSON body for POST or PATCH requests."),
 
-          // TODO:
+        // TODO:
         // https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/compose-http-requests-handle-errors#request-annotations
         prefer: z
           .string()
@@ -139,6 +150,8 @@ export function createServer(): McpServer {
       return textResult(response);
     },
   );
+
+  registerPrompts(server);
 
   return server;
 }
