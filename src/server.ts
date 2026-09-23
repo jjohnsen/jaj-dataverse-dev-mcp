@@ -6,6 +6,8 @@ import * as z from "zod/v4";
 import { dataverseRequest } from "./dataverse.js";
 import { getEnvironments } from "./environments.js";
 
+import { registerPrompts } from "./prompts/index.js";
+
 const require = createRequire(import.meta.url);
 const { version } = require("../package.json") as { version: string };
 
@@ -71,6 +73,8 @@ export function createServer(): McpServer {
     },
   );
 
+  registerPrompts(server);
+
   server.registerTool(
     "dataverse_request",
     {
@@ -104,6 +108,8 @@ export function createServer(): McpServer {
           .optional()
           .describe("Optional JSON body for POST or PATCH requests."),
 
+          // TODO:
+        // https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/compose-http-requests-handle-errors#request-annotations
         prefer: z
           .string()
           .optional()
