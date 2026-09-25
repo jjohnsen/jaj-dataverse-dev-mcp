@@ -23,7 +23,7 @@ Add the server to `.vscode/mcp.json`:
 
 Save the file and press **Start**. The first start may take some time while `npx` downloads the package.
 
-Sign in with the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli):
+Sign in with [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli):
 
 ```bash
 az login
@@ -52,6 +52,29 @@ Open Copilot and try:
 That's it!
 
 > Other MCP-compatible agents follow the same pattern: run jaj-dataverse-dev-mcp over stdio and provide access to your local Azure CLI session and connection configuration.
+
+## Quick Start for Claude Desktop
+
+Add the server to `claude_desktop_config.json`:
+
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "dataverse-dev": {
+      "command": "npx",
+      "args": ["-y", "jaj-dataverse-dev-mcp"],
+      "env": { "DATAVERSE_ENVIRONMENTS_PATH": "C:/Users/you/project/environments.json" }
+    }
+  }
+}
+```
+
+Save the file and fully quit and restart Claude Desktop (config changes aren't picked up by simply closing the window).
+
+Continue from *"Sign in with Azure CLI..."* in [Quick Start for VS Code + GitHub Copilot](#quick-start-for-vs-code--github-copilot)
 
 ## Why this project?
 There are already several Dataverse MCP implementations, including Microsoft's own tooling.

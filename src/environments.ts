@@ -15,12 +15,30 @@ const environmentsFileSchema = z.object({
 });
 
 const defaultEnvironmentsPath = resolve(process.cwd(), "environments.json");
+const EXAMPLE_CONFIG = `{
+  "environments": {
+    "dev": {
+      "url": "https://your-org.crm.dynamics.com/",
+      "allowWrite": true
+    }
+  }
+}`;
 
 export function loadEnvironments(
   configPath = process.env.DATAVERSE_ENVIRONMENTS_PATH ??
     defaultEnvironmentsPath,
 ): Record<string, DataverseEnvironment> {
-  const resolvedPath = resolve(configPath);
+  const source = configPath
+    ? "explicit argument"
+    : process.env.DATAVERSE_ENVIRONMENTS_PATH
+      ? "DATAVERSE_ENVIRONMENTS_PATH environment variable"
+      : "default path (no DATAVERSE_ENVIRONMENTS_PATH set)";
+
+  const effectivePath =
+    configPath ??
+    process.env.DATAVERSE_ENVIRONMENTS_PATH ??
+    defaultEnvironmentsPath;
+  const resolvedPath = resolve(effectivePath);
 
   let rawText: string;
   try {
@@ -28,7 +46,11 @@ export function loadEnvironments(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(
-      `Environment config file not found: ${resolvedPath}. ${message}`,
+      `Environment config file not found at '${resolvedPath}' (source: ${source}).\n` +
+        `To fix: set DATAVERSE_ENVIRONMENTS_PATH in your MCP client config to point ` +
+        `at your environments.json, e.g.:\n` +
+        `  "env": { "DATAVERSE_ENVIRONMENTS_PATH": "C:/path/to/environments.json" }\n` +
+        `Expected file contents:\n${EXAMPLE_CONFIG}`,
     );
   }
 
@@ -38,7 +60,8 @@ export function loadEnvironments(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(
-      `Invalid JSON in environment config file '${resolvedPath}': ${message}`,
+      `Invalid JSON in environment config file '${resolvedPath}' (source: ${source}): ${message}\n` +
+        `Expected file contents:\n${EXAMPLE_CONFIG}`,
     );
   }
 
@@ -47,7 +70,10 @@ export function loadEnvironments(
     const issues = parsed.error.issues
       .map((issue) => `${issue.path.join(".") || "(root)"}: ${issue.message}`)
       .join("; ");
-    throw new Error(`Invalid environment config '${resolvedPath}': ${issues}`);
+    throw new Error(
+      `Invalid environment config '${resolvedPath}' (source: ${source}): ${issues}\n` +
+        `Expected file contents:\n${EXAMPLE_CONFIG}`,
+    );
   }
 
   return parsed.data.environments;
