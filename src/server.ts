@@ -6,8 +6,6 @@ import * as z from "zod/v4";
 import { dataverseRequest } from "./dataverse.js";
 import { getEnvironments } from "./environments.js";
 
-import { registerPrompts } from "./prompts/index.js";
-
 const require = createRequire(import.meta.url);
 const { version } = require("../package.json") as { version: string };
 
@@ -150,8 +148,6 @@ export function createServer(): McpServer {
       return textResult(response);
     },
   );
-
-  registerPrompts(server);
 
   return server;
 }
