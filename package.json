@@ -1,6 +1,6 @@
 {
   "name": "jaj-dataverse-dev-mcp",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "mcpName": "io.github.jjohnsen/jaj-dataverse-dev-mcp",
   "description": "Local-first Dataverse MCP for developers, with Azure CLI auth, direct Web API access, and multi-environment support.",
   "type": "module",
