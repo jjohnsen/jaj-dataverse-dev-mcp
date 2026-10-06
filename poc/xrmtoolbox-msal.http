@@ -1,0 +1,60 @@
+# XrmToolBox / Microsoft Dataverse public client auth POC
+#
+# Purpose:
+# - Verify that the shared Microsoft Dataverse/XrmToolBox public client ID can
+#   acquire a delegated token for a specific Dataverse environment.
+# - Verify the token by calling Dataverse WhoAmI.
+#
+# Requirements:
+# - VS Code REST Client extension (humao.rest-client)
+# - A user with access to the target Dataverse environment
+#
+# IMPORTANT:
+# - Use an environment URL without a trailing slash.
+# - This POC uses the OAuth 2.0 device code flow so no client secret is needed.
+# - If the shared client is not enabled for device-code flow in your tenant,
+#   the first request will fail. In that case we should test interactive
+#   authorization-code + PKCE with MSAL instead.
+
+@tenant = organizations
+@environmentUrl = https://org8ffb6d07.crm.dynamics.com
+@clientId = 51f81489-12ee-4a9e-aaae-a2591f45987d
+
+### 1. Request a device code
+# @name deviceCode
+POST https://login.microsoftonline.com/{{tenant}}/oauth2/v2.0/devicecode
+Content-Type: application/x-www-form-urlencoded
+
+client_id={{clientId}}&scope={{environmentUrl}}/user_impersonation%20openid%20profile%20offline_access
+
+### 2. Sign in
+#
+# Run request 1, then open the verification_uri from the response and enter
+# the user_code.
+#
+# Complete sign-in with a user that has access to the Dataverse environment.
+#
+# Do not run request 3 until sign-in has completed.
+
+### 3. Exchange the device code for a Dataverse access token
+# @name token
+POST https://login.microsoftonline.com/{{tenant}}/oauth2/v2.0/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=urn:ietf:params:oauth:grant-type:device_code&client_id={{clientId}}&device_code={{deviceCode.response.body.$.device_code}}
+
+### 4. Verify the token against Dataverse
+# A 200 response proves that the token is valid for this Dataverse resource.
+# @name whoami
+GET {{environmentUrl}}/api/data/v9.2/WhoAmI
+Authorization: Bearer {{token.response.body.$.access_token}}
+Accept: application/json
+OData-MaxVersion: 4.0
+OData-Version: 4.0
+
+### 5. Optional: query a few accounts
+GET {{environmentUrl}}/api/data/v9.2/accounts?$select=accountid,name&$top=3
+Authorization: Bearer {{token.response.body.$.access_token}}
+Accept: application/json
+OData-MaxVersion: 4.0
+OData-Version: 4.0
