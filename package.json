@@ -23,7 +23,8 @@
     "inspect": "mcp-inspector --server-url http://127.0.0.1:3000/mcp --transport http",
     "inspect:tools": "mcp-inspector --cli http://127.0.0.1:3000/mcp --transport http --method tools/list",
     "inspect:stdio": "mcp-inspector npx tsx src/stdio.ts",
-    "prepublishOnly": "npm run typecheck && npm run build"
+    "prepublishOnly": "npm run typecheck && npm run build",
+    "poc:dynamics365-example-client-auth": "node poc/dynamics365-example-client-auth-poc.mjs"
   },
   "keywords": [
     "mcp",
