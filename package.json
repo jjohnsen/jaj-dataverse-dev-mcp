@@ -17,7 +17,7 @@
     "dev:http": "tsx watch src/http.ts",
     "dev:stdio": "tsx watch src/stdio.ts",
     "start": "tsx src/cli.ts",
-    "build": "tsc",
+    "build": "tsc && node scripts/copy-docs.mjs",
     "typecheck": "tsc --noEmit",
     "test": "npm run typecheck",
     "inspect": "mcp-inspector --server-url http://127.0.0.1:3000/mcp --transport http",
