@@ -6,6 +6,8 @@ const dataverseEnvironmentSchema = z.object({
   url: z.string().url(),
   tenantId: z.string().optional(),
   allowWrite: z.boolean().default(false),
+  auth: z.enum(["azure-cli", "pac"]).default("azure-cli"),
+  pacProfile: z.string().min(1).optional(),
 });
 
 export type DataverseEnvironment = z.infer<typeof dataverseEnvironmentSchema>;
@@ -20,6 +22,12 @@ const EXAMPLE_CONFIG = `{
     "dev": {
       "url": "https://your-org.crm.dynamics.com/",
       "allowWrite": true
+    },
+    "pac-dev": {
+      "url": "https://your-org.crm.dynamics.com/",
+      "allowWrite": true,
+      "auth": "pac",
+      "pacProfile": "My Dataverse Dev"
     }
   }
 }`;
@@ -46,11 +54,11 @@ export function loadEnvironments(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(
-      `Environment config file not found at '${resolvedPath}' (source: ${source}).\n` +
-        `To fix: set DATAVERSE_ENVIRONMENTS_PATH in your MCP client config to point ` +
-        `at your environments.json, e.g.:\n` +
-        `  "env": { "DATAVERSE_ENVIRONMENTS_PATH": "C:/path/to/environments.json" }\n` +
-        `Expected file contents:\n${EXAMPLE_CONFIG}`,
+      "Environment config file not found at '" + resolvedPath + "' (source: " + source + ").\n" +
+        "To fix: set DATAVERSE_ENVIRONMENTS_PATH in your MCP client config to point " +
+        "at your environments.json, e.g.:\n" +
+        "  \"env\": { \"DATAVERSE_ENVIRONMENTS_PATH\": \"C:/path/to/environments.json\" }\n" +
+        "Expected file contents:\n" + EXAMPLE_CONFIG,
     );
   }
 
@@ -60,19 +68,19 @@ export function loadEnvironments(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(
-      `Invalid JSON in environment config file '${resolvedPath}' (source: ${source}): ${message}\n` +
-        `Expected file contents:\n${EXAMPLE_CONFIG}`,
+      "Invalid JSON in environment config file '" + resolvedPath + "' (source: " + source + "): " + message + "\n" +
+        "Expected file contents:\n" + EXAMPLE_CONFIG,
     );
   }
 
   const parsed = environmentsFileSchema.safeParse(parsedJson);
   if (!parsed.success) {
     const issues = parsed.error.issues
-      .map((issue) => `${issue.path.join(".") || "(root)"}: ${issue.message}`)
+      .map((issue) => (issue.path.join(".") || "(root)") + ": " + issue.message)
       .join("; ");
     throw new Error(
-      `Invalid environment config '${resolvedPath}' (source: ${source}): ${issues}\n` +
-        `Expected file contents:\n${EXAMPLE_CONFIG}`,
+      "Invalid environment config '" + resolvedPath + "' (source: " + source + "): " + issues + "\n" +
+        "Expected file contents:\n" + EXAMPLE_CONFIG,
     );
   }
 
@@ -92,9 +100,8 @@ export function getEnvironment(name: string): DataverseEnvironment {
 
   if (!environment) {
     throw new Error(
-      `Unknown environment '${name}'. Available: ${Object.keys(
-        environments,
-      ).join(", ")}`,
+      "Unknown environment '" + name + "'. Available: " +
+        Object.keys(environments).join(", "),
     );
   }
 
