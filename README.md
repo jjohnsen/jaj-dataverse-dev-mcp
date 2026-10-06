@@ -115,6 +115,42 @@ az login --use-device-code          # Remote/headless environments
 az account show
 ```
 
+## Authentication methods
+
+Azure CLI remains the default authentication method. No `auth` setting is required:
+
+```json
+{
+  "environments": {
+    "dev": {
+      "url": "https://YOUR-DEV.crm.dynamics.com/",
+      "allowWrite": true
+    }
+  }
+}
+```
+
+PAC CLI can be used per environment by setting `"auth": "pac"`:
+
+```json
+{
+  "environments": {
+    "dev": {
+      "url": "https://YOUR-DEV.crm.dynamics.com/",
+      "allowWrite": true,
+      "auth": "pac",
+      "pacProfile": "My Dev Profile"
+    }
+  }
+}
+```
+
+When `pacProfile` is set, the server runs `pac auth select --name <profile>` before acquiring a token with `pac auth token`. When `pacProfile` is omitted, the currently active PAC authentication profile is used and the server does not change it.
+
+PAC access tokens are cached in memory and refreshed shortly before expiry. Profile selection is serialized within one MCP server process to avoid overlapping PAC profile switches.
+
+> PAC CLI authentication relies on PAC's machine-level active profile. Avoid changing the active PAC profile from another process while a token is being acquired.
+
 ## Dataverse environments
 
 Environments are configured in `environments.json` in the project root and identified by friendly names such as dev, test, prod.  
