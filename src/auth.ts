@@ -2,6 +2,7 @@ import { AzureCliCredential } from "@azure/identity";
 
 import type { DataverseEnvironment } from "./environments.js";
 import { getPacAccessToken } from "./auth/pac.js";
+import { getAuthenticationHelp } from "./doc/authentication-help.js";
 
 const credentials = new Map<string, AzureCliCredential>();
 
@@ -40,9 +41,13 @@ async function getAzureCliAccessToken(
 export async function getAccessToken(
   environment: DataverseEnvironment,
 ): Promise<string> {
-  if (environment.auth === "pac") {
-    return getPacAccessToken(environment);
-  }
+  try {
+    if (environment.auth === "pac") {
+      return await getPacAccessToken(environment);
+    }
 
-  return getAzureCliAccessToken(environment);
+    return await getAzureCliAccessToken(environment);
+  } catch (error) {
+    throw new Error(getAuthenticationHelp(), { cause: error });
+  }
 }
